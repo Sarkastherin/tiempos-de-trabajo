@@ -38,10 +38,7 @@ jobs:
         env:
           VITE_API_KEY: ${{secrets.API_KEY}}
           VITE_CLIENT_ID: ${{secrets.CLIENT_ID}}
-          VITE_SS_REG106: ${{secrets.SS_REG106}}
-          VITE_SS_SECTORES: ${{secrets.SS_SECTORES}}
-          VITE_SS_EMPLEADOS: ${{secrets.SS_EMPLEADOS}}
-          VITE_SS_CODIGOS: ${{secrets.SS_CODIGOS}}
+          VITE_SS_REG106: ${{secrets.SS}}
         run: npm run build
 
       - name: Setup Pages
