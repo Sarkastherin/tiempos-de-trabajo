@@ -20,8 +20,9 @@ export class GoogleSheet {
       return result;
     } catch (e) {
       window.alert(
-        `Code: ${e.result.error.code}, Message: ${e.result.error.message}`
+        `${this.nameSheet, this.range} - Code: ${e.result.error.code}, Message: ${e.result.error.message}`
       );
+      console.log(e)
       return e.result;
     }
   }
@@ -132,9 +133,26 @@ export class GoogleSheet {
       console.log(e);
     }
   }
+  async getLastId() {
+    const data = await this.getData();
+    const Ids = data.map(item => item.id);
+    return Math.max(...Ids) || 0;
+  }
   getNumCol(key, array) {
     let newArray = array[0];
     newArray = Object.keys(newArray);
     return newArray.indexOf(key) + 1;
+  }
+}
+export class Email {
+  static async getEmail() {
+    try {
+      let response = await gapi.client.gmail.users.getProfile({
+        userId: "me",
+      });
+      return response.result.emailAddress;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

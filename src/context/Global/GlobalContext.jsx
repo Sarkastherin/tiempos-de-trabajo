@@ -1,35 +1,30 @@
 import { createContext, useContext, useReducer } from "react";
 import { GlobalReducer } from "./GlobalReducer";
-import { GoogleSheet } from "../../API/AuthGoogle";
+import { GoogleSheet, Email } from "../../API/AuthGoogle";
 
 const OrdenesGoogleSheet = new GoogleSheet({
-  sheetId: import.meta.env.VITE_SS_REG106,
-  nameSheet: "Ordenes",
-  range: `Ordenes!A1:ZZZ`,
+  sheetId: import.meta.env.VITE_SS,
+  nameSheet: "Tipos de órdenes",
   rowHead: 1,
 });
-const TasksGoogleSheet = new GoogleSheet({
-  sheetId: import.meta.env.VITE_SS_REG106,
-  nameSheet: "REG 106",
-  range: `REG 106!A1:ZZZ`,
+const ActividadesGoogleSheet = new GoogleSheet({
+  sheetId: import.meta.env.VITE_SS,
+  nameSheet: "Actividades",
   rowHead: 1,
 });
 const SectoresGoogleSheet = new GoogleSheet({
-  sheetId: import.meta.env.VITE_SS_SECTORES,
+  sheetId: import.meta.env.VITE_SS,
   nameSheet: "Sectores y Subsectores",
-  range: `Sectores y Subsectores!A1:ZZZ`,
   rowHead: 1,
 });
 const EmpleadosGoogleSheet = new GoogleSheet({
-  sheetId: import.meta.env.VITE_SS_EMPLEADOS,
-  nameSheet: "Registro",
-  range: `Registro!A1:ZZZ`,
+  sheetId: import.meta.env.VITE_SS,
+  nameSheet: "Lista de Empleados",
   rowHead: 1,
 });
 const CodigosGoogleSheet = new GoogleSheet({
-  sheetId: import.meta.env.VITE_SS_CODIGOS,
-  nameSheet: "Codigos migración YABU",
-  range: `Codigos migración YABU!A1:ZZZ`,
+  sheetId: import.meta.env.VITE_SS,
+  nameSheet: "Códigos de tareas",
   rowHead: 1,
 });
 const GlobalContext = createContext();
@@ -38,7 +33,7 @@ export const useGlobal = () => useContext(GlobalContext);
 export function GlobalProvider({ children }) {
   const initialState = {
     orders: [],
-    sectors: { data: [], produccion: [] },
+    sectors: { data: [], sectores: [] },
     empleados: [],
     activeModal: null,
     codigos: [],
@@ -65,23 +60,16 @@ export function GlobalProvider({ children }) {
   };
   const getSectors = async () => {
     const data = await SectoresGoogleSheet.getData();
-    const sectoresProd = data
-      .filter((item) => item.area === "Producción" || item.area === "Servicios")
-      .reduce((acc, item) => {
-        if (!acc.includes(item.sector)) {
-          acc.push(item.sector);
-        }
-        return acc;
-      }, []);
+    const sectores = [...new Set(data.map(item => item.sector))];
     dispatch({
       type: "GET_SECTORS",
-      payload: { data: data, produccion: sectoresProd },
+      payload: { data: data, sectores: sectores },
     });
   };
   const getEmpleados = async () => {
     const data = await EmpleadosGoogleSheet.getData();
     const empleadosProd = data.filter(
-      (item) => item.area === "Producción" && item.activo === "Sí"
+      (item) => item.inactivo === false
     );
     dispatch({
       type: "GET_EMPLEADOS",
@@ -89,13 +77,17 @@ export function GlobalProvider({ children }) {
     });
   };
   const postTasks = async (data) => {
-    const newTasks = data.tasks.map((item) => {
-      item.alias = data.alias;
+    const emailAddress = await Email.getEmail();
+    const lastId = await ActividadesGoogleSheet.getLastId();
+    const newTasks = data.tasks.map((item, index) => {
+      item.operador_alias = data.operador_alias;
       item.fecha = data.fecha;
+      item.registrado_por = emailAddress
+      item.id = lastId + index + 1;
       return item;
     });
     const response = Promise.all(newTasks.map(async (task) => {
-        return await TasksGoogleSheet.postData(task);
+        return await ActividadesGoogleSheet.postData(task);
     }));
     return response
   };

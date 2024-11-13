@@ -35,17 +35,12 @@ export default function CodigoTareas() {
     {
       name: "Código",
       width: "150px",
-      selector: (row) => row.codigo,
+      selector: (row) => row.id,
       sortable: true,
     },
     {
       name: "Descripción de tarea",
-      selector: (row) => row.tarea,
-      sortable: true,
-    },
-    {
-      name: "Sector de referencia",
-      selector: (row) => row.sector_n4,
+      selector: (row) => row.nombre,
       sortable: true,
     },
   ];
@@ -55,7 +50,7 @@ export default function CodigoTareas() {
       <Form.Group className="my-3">
         <Form.Control type="text" placeholder="Ingrese un nombre de tarea" onInput={(e) => {
           const filter = codigos.filter((cod) =>
-            cod.tarea.toLowerCase().includes(e.target.value.toLowerCase())
+            cod.nombre.toLowerCase().includes(e.target.value.toLowerCase())
           );
           setFilterData(filter);
         }}/>

@@ -41,7 +41,7 @@ export default function Home() {
           inicio: "07:00",
           fin: "",
           subsector: "",
-          desvio: "No aplica",
+          comentario: "No aplica",
           cant_pieza: "",
           reproceso: "No",
         },
@@ -86,7 +86,7 @@ export default function Home() {
           <Form.Group className="mb-3" as={Col}>
             <Form.Label>Operario</Form.Label>
             <Form.Select
-              {...register("alias", {
+              {...register("operador_alias", {
                 required: {
                   value: true,
                   message: "Seleccione un Operario",
@@ -96,13 +96,13 @@ export default function Home() {
               <option value=""></option>
               {empleados.map((item, index) => {
                 return (
-                  <option key={`${item.alia}-${index}`} value={item.alias}>
-                    {`${item.nombre} ${item.apellido}`}
+                  <option key={`${item.alias}-${index}`} value={item.alias}>
+                    {`[${item.alias}] - ${item.nombre} ${item.apellido}`}
                   </option>
                 );
               })}
             </Form.Select>
-            {errors.alias && <TextWarningForm message={errors.alias.message} />}
+            {errors.operador_alias && <TextWarningForm message={errors.operador_alias.message} />}
           </Form.Group>
           <Form.Group className="mb-3" as={Col} sm={"auto"}>
             <Form.Label>Sector</Form.Label>
@@ -122,7 +122,7 @@ export default function Home() {
               })}
             >
               <option value=""></option>
-              {sectors.produccion.map((item) => {
+              {sectors.sectores.map((item) => {
                 return (
                   <option key={item} value={item}>
                     {item}
@@ -149,7 +149,7 @@ export default function Home() {
                   inicio: watch(`tasks.${fields.length - 1}.fin`),
                   fin: "",
                   subsector: "",
-                  desvio: "No aplica",
+                  comentario: "No aplica",
                   cant_pieza: "",
                   reproceso: "No",
                 });
@@ -269,7 +269,7 @@ export default function Home() {
                       <Form.Control
                         size={size}
                         type="text"
-                        {...register(`tasks.${index}.desvio`, {
+                        {...register(`tasks.${index}.comentario`, {
                           required: true,
                         })}
                       />

@@ -19,7 +19,6 @@ export default function Navigation() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <NavLink className="nav-link" to='/'>Inicio</NavLink>
-            <NavLink className="nav-link" to='/sectores'>Sectores</NavLink>
             <NavLink className="nav-link" to='/codigo-tareas'>Codigos de tareas</NavLink>
           </Nav>
         </Navbar.Collapse>
