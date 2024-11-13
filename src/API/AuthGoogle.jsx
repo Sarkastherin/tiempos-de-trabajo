@@ -5,9 +5,9 @@ import { convertGroupDates } from "../utils/daysFnc";
 export class GoogleSheet {
   constructor(props) {
     this.sheetId = props.sheetId;
-    this.range = props.range;
     this.rowHead = props.rowHead;
     this.nameSheet = props.nameSheet;
+    this.range = `${props.nameSheet}!A${this.rowHead}:ZZZ`;
   }
   async getResponse() {
     try {
